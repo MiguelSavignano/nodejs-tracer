@@ -5,13 +5,12 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
+    "target": "ESNext",
     "sourceMap": false,
     "noImplicitAny": false,
     "noLib": false,
     "allowSyntheticDefaultImports": true,
-
-    "outDir": ".",
+    "outDir": "dist",
     "baseUrl": "./"
   },
   "exclude": [

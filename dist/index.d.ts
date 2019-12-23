@@ -1,3 +1,2 @@
 import { RequestLogger } from './request-context/RequestLogger';
-
-export const PrintLog = RequestLogger;
+export declare const PrintLog: typeof RequestLogger;

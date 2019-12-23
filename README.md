@@ -14,52 +14,6 @@ npm install nodejs-tracer --save
 
 ## Usage
 
-### PrintLog
-
-```javascript
-import { PrintLog } from 'nodejs-tracer';
-
-class Dummy {
-  @PrintLog()
-  hello(name) {
-    return `Hi ${name}`;
-  }
-}
-new Dummy().hello('Foo');
-// [Dummy#hello] Call with args: ["Foo"]
-// [Dummy#hello] Return: Hi Foo
-```
-
-### PrintLog async functions
-
-```javascript
-import { PrintLog } from 'nodejs-tracer';
-
-class Dummy {
-  @PrintLog()
-  async hello(name) {
-    return `Hi ${name}`;
-  }
-}
-new Dummy().hello('Foo');
-// [Dummy#hello] Call with args: ["Foo"]
-// [Dummy#hello] Return: Hi Foo
-```
-
-### PrintLogProxy
-
-PrintLog for any instance.
-
-```javascript
-import { PrintLogProxy } from 'nodejs-tracer';
-
-import * as fs from 'fs';
-PrintLogProxy(fs, 'existsSync', { className: 'Fs' });
-fs.existsSync(`./package.json`);
-// [Fs#existsSync] Call with args: ["./package.json"]
-// [Fs#existsSync] Return: true
-```
-
 ## Request context
 
 Help to trace called methods in the same request.
@@ -77,31 +31,27 @@ Example:
 - Configure express app with request-context middleware
 
 ```js
-// main.ts
-import { ContextService, RequestLogger } from 'nodejs-tracer/request-context';
-async function bootstrap() {
-  // ...
-  const app = await NestFactory.create(AppModule, {
-    logger: false,
-  });
-  app.use(ContextService.middlewareRequest());
-  app.use(ContextService.middleware());
-  app.useLogger(RequestLogger);
-  // ...
-}
+import { ContextService } from 'nodejs-tracer';
+
+const app = express();
+app.use(ContextService.middlewareRequest());
+app.use(ContextService.middleware());
 ```
 
-- Use PrintLog decorator using the express request context.
+- Use PrintLog using the express request context.
 
 ```javascript
-import { PrintLog } from 'nodejs-tracer/request-context';
+import { PrintLog } from 'nodejs-tracer';
+
 class Dummy {
-  @PrintLog()
   hello(name) {
     return `Hi ${name}`;
   }
 }
+PrintLog(Dummy, 'hello');
 new Dummy().hello('Foo');
+
+// [Dummy#hello] Call with args: ["Foo"]
 // f45bg6-56bh-hfc3n-jhu76j [Dummy#hello] Return: Hi Foo
 ```
 
@@ -113,22 +63,28 @@ new Dummy().hello('Foo');
 
 ```typescript
 class Dummy {
-  @PrintLog({ parseResult: value => ({ ...value, token: '*********' }) })
+  @PrintLog()
   foo(secret) {
     return { token: '1234', result: { foo: 'bar' } };
   }
 }
+
+PrintLog(Dummy, 'hello', {
+  parseResult: value => ({ ...value, token: '*********' }),
+});
 ```
 
 ### parseArguments
 
 ```typescript
 class Dummy {
-  @PrintLog({ parseArguments: (value: any[]) => ['secret*****'] })
+  @PrintLog()
   foo(secret) {
     return { token: '1234', result: { foo: 'bar' } };
   }
 }
+
+PrintLog(Dummy, 'hello', { parseArguments: (value: any[]) => ['secret*****'] });
 ```
 
 ### Advanced
@@ -140,21 +96,17 @@ You can create more traces in the middleware
 Example:
 
 ```js
-// main.ts
-import { ContextService, RequestLogger } from 'nodejs-tracer/request-context';
+import { ContextService } from 'nodejs-tracer';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { logger: false });
-  app.use(ContextService.middlewareRequest());
-  app.use(
-    ContextService.middleware({
-      addTraces(req) {
-        this.setTraceByUuid();
-        this.set('request:ip', req.ip);
-      },
-    }),
-  );
-  app.useLogger(RequestLogger);
-  // ...
-}
+const app = express();
+app.use(ContextService.middlewareRequest());
+app.use(ContextService.middleware());
+app.use(
+  ContextService.middleware({
+    addTraces(req) {
+      this.setTraceByUuid();
+      this.set('request:ip', req.ip);
+    },
+  }),
+);
 ```

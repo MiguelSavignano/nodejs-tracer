@@ -2,10 +2,10 @@
   "name": "nodejs-tracer",
   "version": "1.2.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "docs": "typedoc --out docs --mode modules",
-    "build": "rm -fr *.js *.d.ts *.js.map request-context && tsc",
+    "build": "rm -fr dist && tsc",
     "test": "jest"
   },
   "author": "migue.masx@gmail.com",
