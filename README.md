@@ -1,15 +1,15 @@
-# Nestjs tracer
+# Nodejs tracer
 
 Use decorators for trace your class methods
 
-[![npm package](https://img.shields.io/npm/v/nestjs-tracer.svg)](https://www.npmjs.com/package/nestjs-tracer) [![code documentation](https://img.shields.io/badge/Code-documentation-blue.svg)](https://miguelsavignano.github.io/nestjs-tracer/globals.html)
-[![Maintainability](https://api.codeclimate.com/v1/badges/8b4c8280e6801cce4ad6/maintainability)](https://codeclimate.com/github/MiguelSavignano/nestjs-tracer/maintainability)
+[![npm package](https://img.shields.io/npm/v/nodejs-tracer.svg)](https://www.npmjs.com/package/nodejs-tracer) [![code documentation](https://img.shields.io/badge/Code-documentation-blue.svg)](https://miguelsavignano.github.io/nodejs-tracer/globals.html)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8b4c8280e6801cce4ad6/maintainability)](https://codeclimate.com/github/MiguelSavignano/nodejs-tracer/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/8b4c8280e6801cce4ad6/test_coverage)](https://api.codeclimate.com/v1/badges/8b4c8280e6801cce4ad6/test_coverage)
 
 ## Install
 
 ```
-npm install nestjs-tracer --save
+npm install nodejs-tracer --save
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ npm install nestjs-tracer --save
 ### PrintLog
 
 ```javascript
-import { PrintLog } from "nestjs-tracer";
+import { PrintLog } from 'nodejs-tracer';
 
 class Dummy {
   @PrintLog()
@@ -25,7 +25,7 @@ class Dummy {
     return `Hi ${name}`;
   }
 }
-new Dummy().hello("Foo");
+new Dummy().hello('Foo');
 // [Dummy#hello] Call with args: ["Foo"]
 // [Dummy#hello] Return: Hi Foo
 ```
@@ -33,7 +33,7 @@ new Dummy().hello("Foo");
 ### PrintLog async functions
 
 ```javascript
-import { PrintLog } from "nestjs-tracer";
+import { PrintLog } from 'nodejs-tracer';
 
 class Dummy {
   @PrintLog()
@@ -41,7 +41,7 @@ class Dummy {
     return `Hi ${name}`;
   }
 }
-new Dummy().hello("Foo");
+new Dummy().hello('Foo');
 // [Dummy#hello] Call with args: ["Foo"]
 // [Dummy#hello] Return: Hi Foo
 ```
@@ -51,10 +51,10 @@ new Dummy().hello("Foo");
 PrintLog for any instance.
 
 ```javascript
-import { PrintLogProxy } from "nestjs-tracer";
+import { PrintLogProxy } from 'nodejs-tracer';
 
-import * as fs from "fs";
-PrintLogProxy(fs, "existsSync", { className: "Fs" });
+import * as fs from 'fs';
+PrintLogProxy(fs, 'existsSync', { className: 'Fs' });
 fs.existsSync(`./package.json`);
 // [Fs#existsSync] Call with args: ["./package.json"]
 // [Fs#existsSync] Return: true
@@ -78,11 +78,11 @@ Example:
 
 ```js
 // main.ts
-import { ContextService, RequestLogger } from "nestjs-tracer/request-context";
+import { ContextService, RequestLogger } from 'nodejs-tracer/request-context';
 async function bootstrap() {
   // ...
   const app = await NestFactory.create(AppModule, {
-    logger: false
+    logger: false,
   });
   app.use(ContextService.middlewareRequest());
   app.use(ContextService.middleware());
@@ -94,14 +94,14 @@ async function bootstrap() {
 - Use PrintLog decorator using the express request context.
 
 ```javascript
-import { PrintLog } from "nestjs-tracer/request-context";
+import { PrintLog } from 'nodejs-tracer/request-context';
 class Dummy {
   @PrintLog()
   hello(name) {
     return `Hi ${name}`;
   }
 }
-new Dummy().hello("Foo");
+new Dummy().hello('Foo');
 // f45bg6-56bh-hfc3n-jhu76j [Dummy#hello] Return: Hi Foo
 ```
 
@@ -113,9 +113,9 @@ new Dummy().hello("Foo");
 
 ```typescript
 class Dummy {
-  @PrintLog({ parseResult: value => ({ ...value, token: "*********" }) })
+  @PrintLog({ parseResult: value => ({ ...value, token: '*********' }) })
   foo(secret) {
-    return { token: "1234", result: { foo: "bar" } };
+    return { token: '1234', result: { foo: 'bar' } };
   }
 }
 ```
@@ -124,9 +124,9 @@ class Dummy {
 
 ```typescript
 class Dummy {
-  @PrintLog({ parseArguments: (value: any[]) => ["secret*****"] })
+  @PrintLog({ parseArguments: (value: any[]) => ['secret*****'] })
   foo(secret) {
-    return { token: "1234", result: { foo: "bar" } };
+    return { token: '1234', result: { foo: 'bar' } };
   }
 }
 ```
@@ -141,7 +141,7 @@ Example:
 
 ```js
 // main.ts
-import { ContextService, RequestLogger } from "nestjs-tracer/request-context";
+import { ContextService, RequestLogger } from 'nodejs-tracer/request-context';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { logger: false });
@@ -150,9 +150,9 @@ async function bootstrap() {
     ContextService.middleware({
       addTraces(req) {
         this.setTraceByUuid();
-        this.set("request:ip", req.ip);
-      }
-    })
+        this.set('request:ip', req.ip);
+      },
+    }),
   );
   app.useLogger(RequestLogger);
   // ...

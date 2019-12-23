@@ -1,20 +1,19 @@
-import { Logger } from "@nestjs/common";
-import { ContextService } from "./ContextService";
+import { Logger } from '../NodejsLogger';
+import { ContextService } from './ContextService';
 
-export class RequestLogger extends Logger {
-  constructor(private ContextService) {
-    super();
-  }
+export class RequestLogger {
+  constructor(private ContextService) {}
+
   log(message: any, context?: string) {
-    super.log(message, `${this.buildTags()}${context}`);
+    Logger.log(message, `${this.buildTags()}${context}`);
   }
 
   warn(message: any, context?: string) {
-    super.warn(message, `${this.buildTags()}${context}`);
+    Logger.warn(message, `${this.buildTags()}${context}`);
   }
 
-  error(message: any, trace?: string, context?: string) {
-    super.error(message, trace, `${this.buildTags()}${context}`);
+  error(error: any, context?: string) {
+    Logger.error(error, `${this.buildTags()}${context}`);
   }
 
   buildTags() {

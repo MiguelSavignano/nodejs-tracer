@@ -1,9 +1,9 @@
-import { ContextService, PrintLog } from "..";
-import { Logger } from "@nestjs/common";
-import * as request from "supertest";
-import * as express from "express";
-import * as uuid from "uuid/v4";
-jest.mock("uuid/v4");
+import { ContextService, PrintLog } from '..';
+import { Logger } from '../../NodejsLogger';
+import * as request from 'supertest';
+import * as express from 'express';
+import * as uuid from 'uuid/v4';
+jest.mock('uuid/v4');
 
 const app = express();
 app.use(ContextService.middlewareRequest());
@@ -16,17 +16,17 @@ class Dummy {
   }
 }
 
-app.get("/test", (req, res) => {
-  const message = new Dummy().hello("Foo");
+app.get('/test', (req, res) => {
+  const message = new Dummy().hello('Foo');
   res.send(message);
 });
 
-describe("App middleware", () => {
-  it("generate uuid per request", async () => {
-    const spy = jest.spyOn(Logger, "log").mockImplementation(jest.fn());
+describe('App middleware', () => {
+  it('generate uuid per request', async () => {
+    const spy = jest.spyOn(Logger, 'log').mockImplementation(jest.fn());
 
     await request(app)
-      .get("/test")
+      .get('/test')
       .expect(200);
     expect(spy).toBeCalled();
 
@@ -35,7 +35,7 @@ describe("App middleware", () => {
     expect(spy).toBeCalledTimes(2);
 
     await request(app)
-      .get("/test")
+      .get('/test')
       .expect(200);
 
     expect(spy).toBeCalled();

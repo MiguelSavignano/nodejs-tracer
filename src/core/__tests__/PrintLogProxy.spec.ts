@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import { PrintLogProxy as PrintLogProxyCore } from "../PrintLogger";
-import { Logger } from "@nestjs/common";
+import { Logger } from "../../NodejsLogger";
 
 const PrintLogProxy = PrintLogProxyCore({ Logger });
 
