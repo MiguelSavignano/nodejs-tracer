@@ -11,18 +11,27 @@ export interface ILoggerFormatter {
 }
 
 export class Logger {
-  constructor(private formatter: ILoggerFormatter) {}
+  constructor(
+    private formatter: ILoggerFormatter,
+    private contextService = ContextService,
+  ) {}
 
   log(message: any, tags?: string) {
-    console.log(this.formatter.format(message, tags, ContextService.tags()));
+    console.log(
+      this.formatter.format(message, tags, this.contextService.tags()),
+    );
   }
 
   error(message: any, tags?: string) {
-    console.error(this.formatter.format(message, tags, ContextService.tags()));
+    console.error(
+      this.formatter.format(message, tags, this.contextService.tags()),
+    );
   }
 
   warn(message: any, tags?: string) {
-    console.warn(this.formatter.format(message, tags, ContextService.tags()));
+    console.warn(
+      this.formatter.format(message, tags, this.contextService.tags()),
+    );
   }
 
   setFormatter(formatter: ILoggerFormatter) {
@@ -30,7 +39,7 @@ export class Logger {
   }
 }
 
-export class LoggerJSONFormat implements ILoggerFormatter {
+export class JSONFormatter implements ILoggerFormatter {
   format(message: any, tags: string, contextTags: string[]) {
     try {
       return JSON.stringify({ tags: this.allTags(tags, contextTags), message });
@@ -39,23 +48,20 @@ export class LoggerJSONFormat implements ILoggerFormatter {
     }
   }
 
-  private allTags(tags: string, contextTags: string[]) {
-    return [...contextTags, ...tags];
+  protected allTags(tags: string, contextTags: string[]) {
+    return [...contextTags, tags];
   }
 }
 
-export class LoggerTextFormat implements ILoggerFormatter {
+export class TextFormatter implements ILoggerFormatter {
   format(message: any, tags: string, contextTags: string[]) {
     return `${this.allTags(tags, contextTags)} ${message}`;
   }
 
-  private allTags(tags: string, contextTags: string[]) {
+  protected allTags(tags: string, contextTags: string[]) {
     if (!contextTags.length) return tags;
-    const contextTagsString = contextTags.map(tag => `[${tag}]`).join(' ');
 
-    return `${contextTagsString} ${tags}`;
+    const contextTagsString = contextTags.map(tag => `[${tag}]`).join(' ');
+    return tags ? `${contextTagsString} [${tags}]` : contextTagsString;
   }
 }
-
-const logger = new Logger(new LoggerTextFormat());
-export default logger;

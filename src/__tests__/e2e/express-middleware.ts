@@ -1,27 +1,30 @@
-import { ContextService, PrintLog } from '..';
-import requestLogger from '../../request-context/RequestLogger';
+import { ContextService } from '../../ContextService';
+import Logger from '../../index';
+
 import * as request from 'supertest';
 import * as express from 'express';
 import * as uuid from 'uuid/v4';
 jest.mock('uuid/v4');
 
-const app = express();
-app.use(ContextService.middlewareRequest());
-app.use(ContextService.middleware());
-
-class Dummy {
-  @PrintLog()
-  hello(name) {
-    return `Hi ${name}`;
-  }
-}
-
-app.get('/test', (req, res) => {
-  const message = new Dummy().hello('Foo');
-  res.send(message);
-});
-
 describe('App middleware', () => {
+  let app;
+  beforeEach(() => {
+    app = undefined;
+    app = express();
+    app.use(ContextService.middlewareRequest());
+    app.use(ContextService.middlewareRequestUUID());
+
+    const service = async () => {
+      Logger.log('async log');
+    };
+
+    app.get('/test', async (req, res) => {
+      Logger.log('Start request');
+      await service();
+      res.send('');
+    });
+  });
+
   it('generate uuid per request', async () => {
     const spy = jest.spyOn(console, 'log').mockImplementation(jest.fn());
 

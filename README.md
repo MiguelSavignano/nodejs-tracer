@@ -35,63 +35,12 @@ import { ContextService } from 'nodejs-tracer';
 
 const app = express();
 app.use(ContextService.middlewareRequest());
-app.use(ContextService.middleware());
+app.use(ContextService.middlewareRequestUUID());
 ```
 
-- Use PrintLog using the express request context.
+### Extends
 
-```javascript
-import { PrintLog } from 'nodejs-tracer';
-
-class Dummy {
-  hello(name) {
-    return `Hi ${name}`;
-  }
-}
-PrintLog(Dummy, 'hello');
-new Dummy().hello('Foo');
-
-// [Dummy#hello] Call with args: ["Foo"]
-// f45bg6-56bh-hfc3n-jhu76j [Dummy#hello] Return: Hi Foo
-```
-
-## PrintLog Options
-
-- Hidden secret information in logs
-
-### parseResult
-
-```typescript
-class Dummy {
-  @PrintLog()
-  foo(secret) {
-    return { token: '1234', result: { foo: 'bar' } };
-  }
-}
-
-PrintLog(Dummy, 'hello', {
-  parseResult: value => ({ ...value, token: '*********' }),
-});
-```
-
-### parseArguments
-
-```typescript
-class Dummy {
-  @PrintLog()
-  foo(secret) {
-    return { token: '1234', result: { foo: 'bar' } };
-  }
-}
-
-PrintLog(Dummy, 'hello', { parseArguments: (value: any[]) => ['secret*****'] });
-```
-
-### Advanced
-
-Extend request context
-
-You can create more traces in the middleware
+Extend request context, you can create more traces in the middleware.
 
 Example:
 
@@ -100,13 +49,10 @@ import { ContextService } from 'nodejs-tracer';
 
 const app = express();
 app.use(ContextService.middlewareRequest());
-app.use(ContextService.middleware());
+app.use(ContextService.middlewareRequestUUID());
 app.use(
-  ContextService.middleware({
-    addTraces(req) {
-      this.setTraceByUuid();
-      this.set('request:ip', req.ip);
-    },
+  ContextService.middleware((context, req, res) => {
+    context.set('request:ip', req.ip);
   }),
 );
 ```
