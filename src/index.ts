@@ -1,3 +1,5 @@
-import requestLogger from './request-context/RequestLogger';
+import { Logger, TextFormatter } from './ContextLogger';
 
-export const PrintLog = requestLogger;
+const logger = new Logger(new TextFormatter());
+
+export default logger;
