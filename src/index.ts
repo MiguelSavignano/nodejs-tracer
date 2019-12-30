@@ -1,3 +1,3 @@
-import { RequestLogger } from './request-context/RequestLogger';
+import requestLogger from './request-context/RequestLogger';
 
-export const PrintLog = RequestLogger;
+export const PrintLog = requestLogger;

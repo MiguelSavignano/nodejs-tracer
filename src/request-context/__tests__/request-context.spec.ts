@@ -1,5 +1,5 @@
 import { ContextService, PrintLog } from '..';
-import { Logger } from '../../NodejsLogger';
+import requestLogger from '../../request-context/RequestLogger';
 import * as request from 'supertest';
 import * as express from 'express';
 import * as uuid from 'uuid/v4';
@@ -23,7 +23,7 @@ app.get('/test', (req, res) => {
 
 describe('App middleware', () => {
   it('generate uuid per request', async () => {
-    const spy = jest.spyOn(Logger, 'log').mockImplementation(jest.fn());
+    const spy = jest.spyOn(console, 'log').mockImplementation(jest.fn());
 
     await request(app)
       .get('/test')
