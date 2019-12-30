@@ -51,10 +51,8 @@ const app = express();
 app.use(ContextService.middlewareRequest());
 app.use(ContextService.middlewareRequestUUID());
 app.use(
-  ContextService.middleware({
-    addTraces(req, _res) {
-      this.set('request:ip', req.ip);
-    },
+  ContextService.middleware((context, req, res) => {
+    context.set('request:ip', req.ip);
   }),
 );
 ```
