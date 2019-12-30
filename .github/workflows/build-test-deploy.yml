@@ -42,8 +42,8 @@ jobs:
 
     steps:
       - name: Publish to Npm
-      run: |
-        echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
-        npm publish
-      env:
-        NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+        run: |
+          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
+          npm publish
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
