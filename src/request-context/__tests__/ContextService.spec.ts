@@ -24,7 +24,11 @@ Set {
   "request:id",
 }
 `);
-    expect(ContextService.printTags()).toMatchInlineSnapshot(`"UUID_MOCK] ["`);
+    expect(ContextService.tags()).toMatchInlineSnapshot(`
+Array [
+  "UUID_MOCK",
+]
+`);
   });
 
   it(".middleware set request id with UUID", () => {
@@ -50,8 +54,11 @@ Set {
     expect(spy).toBeCalledTimes(2);
     expect(spy).toHaveBeenCalledWith("request:id", "UUID_MOCK");
     expect(spy).toHaveBeenLastCalledWith("request:ip", "127.0.0.1");
-    expect(ContextService.printTags()).toMatchInlineSnapshot(
-      `"UUID_MOCK] [UUID_MOCK] ["`
-    );
+    expect(ContextService.tags()).toMatchInlineSnapshot(`
+Array [
+  "UUID_MOCK",
+  "UUID_MOCK",
+]
+`);
   });
 });
